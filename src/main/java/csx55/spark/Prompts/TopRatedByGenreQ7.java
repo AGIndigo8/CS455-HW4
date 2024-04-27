@@ -27,17 +27,11 @@ public class TopRatedByGenreQ7 {
              movies.col("movieId").equalTo(ratings.col("movieId"))
         );
         
-        Dataset<Row> genreRank = joined.select("movieID", "genres", "rating");
-        genreRank = genreRank.groupBy("genres", "movieID").agg( functions.avg("rating").as("avg_rating"));
-        
+        Dataset<Row> genreRank = joined.select("genres", "rating", "title");
+        genreRank = genreRank.groupBy("genres", "title").agg( functions.avg("rating").as("avg_rating"));
+        // Top 3 rated movies for EACH genre
         genreRank = genreRank.sort(functions.desc("avg_rating"));
-        genreRank = genreRank.groupBy("genres").agg(functions.collect_list("movieID").as("movieID"), functions.collect_list("avg_rating").as("avg_rating"));
-        genreRank = genreRank.withColumn("top_3", functions.array(functions.col("movieID").getItem(0), functions.col("movieID").getItem(1), functions.col("movieID").getItem(2)));
-        genreRank = genreRank.drop("movieID");
-        genreRank = genreRank.withColumnRenamed("top_3", "movieID");
-        genreRank = genreRank.withColumn("top_3_avg_rating", functions.array(functions.col("avg_rating").getItem(0), functions.col("avg_rating").getItem(1), functions.col("avg_rating").getItem(2)));
-        genreRank = genreRank.drop("avg_rating");
-        genreRank = genreRank.withColumnRenamed("top_3_avg_rating", "avg_rating");
+        genreRank = genreRank.groupBy("genres").agg(functions.collect_list("title").as("top_3_movies"));
 
 
         String path = ds.getPath() + OUTPUT;
