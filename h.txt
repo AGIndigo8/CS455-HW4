@@ -1,0 +1,1 @@
+Number of movies tagged as Comedy or comedy: 8374

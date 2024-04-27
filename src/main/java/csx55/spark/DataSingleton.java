@@ -1,8 +1,9 @@
-package main.java.csx55.spark;
+package csx55.spark;
 
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructType;
 
@@ -10,15 +11,17 @@ import java.util.HashMap;
 
 public class DataSingleton {
 
-    public static final String PATH = "hdfs://H4/data";
+    public static final String PATH = "hdfs://columbia.cs.colostate.edu:31175/H4/data";
     private static DataSingleton instance = null;
 
     private HashMap<String, Dataset<Row>> data = new HashMap<String, Dataset<Row>>();
     private JavaSparkContext sc;
+    private SparkSession spark;
 
 
-    private DataSingleton(JavaSparkContext sc) {
+    private DataSingleton(JavaSparkContext sc, SparkSession spark) {
         this.sc = sc;
+        this.spark = spark;
         loadData();
     }
 
@@ -34,9 +37,9 @@ public class DataSingleton {
         return PATH;
     }
 
-    public static DataSingleton getInstance(JacaSparkContext sc) {
+    public static DataSingleton getInstance(JavaSparkContext sc, SparkSession spark) {
         if (instance == null) {
-            instance = new DataSingleton(JavaSparkContext sc);
+            instance = new DataSingleton(sc, spark);
         }
         return instance;
     }
@@ -64,7 +67,7 @@ public class DataSingleton {
                 .add("tag", DataTypes.StringType, false)
                 .add("timestamp", DataTypes.LongType, false);
 
-        return sc.read()
+        return spark.read()
                 .option("header", "true")
                 .schema(schema)
                 .csv(PATH + "/tags.csv");
@@ -77,54 +80,54 @@ public class DataSingleton {
             .add("rating", DataTypes.DoubleType, false)
             .add("timestamp", DataTypes.LongType, false);
 
-            return sc.read()
+            return spark.read()
                 .option("header", "true")
                 .schema(schema)
                 .csv(PATH + "/ratings.csv");
     }
 
-    private DataSet<Row> loadMovies(){
+    private Dataset<Row> loadMovies(){
         StructType schema = new StructType()
             .add("movieId", DataTypes.IntegerType, false)
             .add("title", DataTypes.StringType, false)
             .add("genres", DataTypes.StringType, false);
 
-            return sc.read()
+            return spark.read()
                 .option("header", "true")
                 .schema(schema)
                 .csv(PATH + "/movies.csv");
     }
 
-    private DataSet<Row> loadLinks(){
+    private Dataset<Row> loadLinks(){
         StructType schema = new StructType()
             .add("movieId", DataTypes.IntegerType, false)
             .add("imdbId", DataTypes.IntegerType, false)
             .add("tmdbId", DataTypes.IntegerType, false);
 
-            return sc.read()
+            return spark.read()
                 .option("header", "true")
                 .schema(schema)
                 .csv(PATH + "/links.csv");
     }
 
-    private DataSet<Row> loadGenomeScores(){
+    private Dataset<Row> loadGenomeScores(){
         StructType schema = new StructType()
             .add("movieId", DataTypes.IntegerType, false)
             .add("tagId", DataTypes.IntegerType, false)
             .add("relevance", DataTypes.DoubleType, false);
 
-            return sc.read()
+            return spark.read()
                 .option("header", "true")
                 .schema(schema)
                 .csv(PATH + "/genome-scores.csv");
     }
 
-    private DataSet<Row> loadGenomeTags(){
+    private Dataset<Row> loadGenomeTags(){
         StructType schema = new StructType()
             .add("tagId", DataTypes.IntegerType, false)
             .add("tag", DataTypes.StringType, false);
 
-            return sc.read()
+            return spark.read()
                 .option("header", "true")
                 .schema(schema)
                 .csv(PATH + "/genome-tags.csv");

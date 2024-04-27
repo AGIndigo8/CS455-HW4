@@ -1,11 +1,11 @@
-package main.java.csx55.spark.Prompts;
+package csx55.spark.Prompts;
 
 import javax.xml.crypto.Data;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.functions;
-import main.java.csx55.spark.DataSingleton;
+import csx55.spark.DataSingleton;
 
 /*
  * This just encapsulates the code for the first prompt. Nothing special here. You'll find the same unremarkable design in the other prompt classes. It's just a way to organize the code.
@@ -25,12 +25,12 @@ public class MoviesByYearQ1 {
         String regex = "\\(\\d{4}\\)"; // matches (year) in title
 
         movies = movies.filter(
-            movies .col("title") .rlike(regex)
+            movies .col("title").rlike(regex)
         );
         
         movies = movies.withColumn(
             "year",
-            functions.regexp_extract( movies.col("title"), regex, 1)
+            functions.regexp_extract( movies.col("title"), regex, 0)
          );
 
         Dataset<Row> moviesByYear = movies

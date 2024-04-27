@@ -1,20 +1,12 @@
 package csx55.spark;
 
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.types.DataTypes;
-import org.apache.spark.sql.types.StructType;
 
-import main.java.csx55.spark.Prompts.*;
+import csx55.spark.Prompts.*;
 
 import org.apache.spark.sql.SparkSession;
 
-import java.util.List;
-
 public class MovieLens {
-
-    HashMap<String, Dataset> data = new HashMap<String, Dataset>();
 
 
     public static void main(String[] args) {
@@ -27,12 +19,7 @@ public class MovieLens {
       
         JavaSparkContext sc = new JavaSparkContext(spark.sparkContext());
 
-        DataSingleton ds = DataSingleton.getInstance(sc);
-
-        List<String> first10 = data.take(10);
-        for (String s : first10) {
-            System.out.println(s);
-        }
+        DataSingleton ds = DataSingleton.getInstance(sc, spark);
 
         String task = args[0];
 

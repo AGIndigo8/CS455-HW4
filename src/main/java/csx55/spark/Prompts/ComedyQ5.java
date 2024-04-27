@@ -1,9 +1,9 @@
-package main.java.csx55.spark.Prompts;
+package csx55.spark.Prompts;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.functions;
-import main.java.csx55.spark.DataSingleton;
+import csx55.spark.DataSingleton;
 
 /*
  * This just encapsulates the code for the fifth prompt. Nothing special here. You'll find the same unremarkable design in the other prompt classes. It's just a way to organize the code.
